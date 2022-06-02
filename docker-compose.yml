@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:14
+    command: postgres -c 'max_connections=250'
+    ports:
+      - "5432"
+    env_file:
+      - ./.env
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - backend
+    restart: unless-stopped
+
+  api:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+    image: fofik234/trpo_2:228
+    depends_on:
+      - postgres
+    ports:
+      - 3000:3000
+    env_file:
+      - ./.env
+    networks:
+      - backend
+    restart: unless-stopped
+
+networks:
+  backend:
+
+volumes:
+  postgres-data:
